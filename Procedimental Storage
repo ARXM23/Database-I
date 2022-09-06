@@ -1,0 +1,50 @@
+use SFCIB
+
+--Procedimiento Almacenado
+--CRUD: Ingresar, Dar baja, modificar, buscar y listar
+
+select * from Deptos 
+--Establece que EstadoD es booleano y comienza en true
+alter table Deptos add EstadoD bit default 1
+update Deptos set EstadoD=1
+
+--Anida el Procedimiento
+create procedure NDpto
+@ND nvarchar(48)
+--Inicia la declaracion del procedimiento @ND
+as
+declare @nde as nvarchar(48)
+set @nde = (select NombreDpto from Deptos where NombreDpto=@ND)
+if(@ND='')
+begin
+	print'No puede ser nulo' 
+end
+
+else
+begin
+	if(@ND=@nde)
+	begin
+		print'Dpto Duplicado'
+end
+
+else
+begin
+	insert into Deptos values(@ND,1)
+	end
+end
+--Termina el procedimiento de @ND
+
+--Dar baja
+create procedure BDpto
+@ID int
+as
+declare @iddept as int
+set @iddept = (select Id_Dptos from Deptos where Id_Dptos=@ID)
+if(@iddept=@ID)
+begin
+	update Deptos set EstadoD=0 where Id_Dptos=@ID
+end
+else
+begin
+	print'Departamento no encontrado'
+end
